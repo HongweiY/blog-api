@@ -6,7 +6,10 @@ import { PostsEntity } from './posts/posts.entity';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
+import { ColumnsModule } from './columns/columns.module';
+import { ColumnsEntity } from './columns/columns.entity';
 import envConfig from '../config/env';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -17,19 +20,20 @@ import envConfig from '../config/env';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        entities: [PostsEntity],
-        host: configService.get<string>('DB_HOST', 'localhost'),
-        port: configService.get<number>('DB_PORT', 3306),
-        username: configService.get<string>('DB_USER', 'root'),
-        password: configService.get<string>('DB_PASSWD', 'root'),
-        database: configService.get<string>('DB_DATABASE', 'blog'),
+        entities: [PostsEntity, ColumnsEntity],
+        host: configService.get('DB_HOST'),
+        port: +configService.get('DB_PORT'),
+        username: configService.get('DB_USER'),
+        password: configService.get('DB_PASSWD'),
+        database: configService.get('DB_DATABASE'),
         timezone: '+08:00',
         synchronize: true,
       }),
     }),
     PostsModule,
+    ColumnsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

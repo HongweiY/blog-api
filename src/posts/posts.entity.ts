@@ -15,7 +15,7 @@ export class PostsEntity {
   content: string;
 
   @Column('tinyint')
-  type: number;
+  column: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   create_time: Date;

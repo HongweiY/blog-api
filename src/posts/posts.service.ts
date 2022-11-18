@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import { PostsEntity } from './posts.entity';
@@ -65,5 +65,15 @@ export class PostsService {
       throw new HttpException('文章不存在', 401);
     }
     return await this.postsRepository.remove(exitPost);
+  }
+
+  //查询专栏下的文章
+  async findPostByCid(params): Promise<PostRo> {
+    const { cId } = params;
+    const list = await this.postsRepository.find({ where: { column: cId } });
+    const count = await this.postsRepository.count({
+      where: { column: cId },
+    });
+    return { list, count };
   }
 }
